@@ -7,3 +7,4 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 /twitter4j.properties
+/nb-configuration.xml
