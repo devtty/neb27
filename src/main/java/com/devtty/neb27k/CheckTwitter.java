@@ -1,10 +1,8 @@
 package com.devtty.neb27k;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerContext;
-import org.quartz.SchedulerException;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Query;
@@ -20,42 +18,36 @@ import twitter4j.TwitterFactory;
  *
  * @author Denis
  */
-public class CheckTwitter implements Job {
+@Singleton
+public class CheckTwitter {
 
     Logger logger = LoggerFactory.getLogger(CheckTwitter.class);
 
-    @Override
-    public void execute(JobExecutionContext jec) throws JobExecutionException {
-        
+    @Inject
+    Var var;
+
+    @Schedule(minute = "*/2", hour = "*", persistent = false)
+    public void execute() {
         try {
-            SchedulerContext sc = jec.getScheduler().getContext();
-            
             Twitter twitter = TwitterFactory.getSingleton();
 
             Query query = new Query("#neb27 OR #Regionalbahndamenklub OR #heidekrautbahn");
             query.setResultType(Query.ResultType.recent);
-            
-            if(sc.containsKey(Constants.LAST_TWEET)){
-                query.setSinceId(sc.getLong(Constants.LAST_TWEET));
-            }
-                
+
+            query.setSinceId(var.getLastTweet());
+
             QueryResult result = twitter.search(query);
 
             for (Status status : result.getTweets()) {
-                logger.debug("Tweet: " + status.getUser().getScreenName() + ": " + status.getText());
-                if (!status.isRetweetedByMe()) {
+                logger.debug("Tweeet: " + status.getUser().getScreenName() + ": " + status.getText());
+                if (!status.getUser().getScreenName().equals(var.getTweetas()) && !status.isRetweeted()) {
                     logger.debug("Retweet status " + status.getId());
-                    
                     Status rt = twitter.retweetStatus(status.getId());
                     long id = rt.getId();
-                    jec.getScheduler().getContext().put(Constants.LAST_TWEET, id);
-                     
+                    var.setLastTweet(id);
                 }
             }
-
         } catch (TwitterException ex) {
-            logger.error(ex.getMessage());
-        } catch (SchedulerException ex) {
             logger.error(ex.getMessage());
         }
     }

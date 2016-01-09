@@ -1,9 +1,8 @@
 package com.devtty.neb27k;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.DirectMessage;
@@ -21,24 +20,28 @@ import twitter4j.TwitterFactory;
  * 
  * @author Denis
  */
-public class CheckTwitterMessages implements Job{
+@Singleton
+public class CheckTwitterMessages{
 
     Logger logger = LoggerFactory.getLogger(CheckTwitterMessages.class);
     
-    @Override
-    public void execute(JobExecutionContext jec) throws JobExecutionException {
+    @Inject
+    Var var;
+    
+    @Schedule(minute="*/2", hour="*", persistent=false)
+    public void execute(){
         try {
                         
             Twitter twitter = TwitterFactory.getSingleton();
             
-            ResponseList<DirectMessage> dms = twitter.getDirectMessages(new Paging(jec.getScheduler().getContext().getLong(Constants.LAST_TWEET)));
+            ResponseList<DirectMessage> dms = twitter.getDirectMessages(new Paging(var.getLastTweet()));
             
             for(DirectMessage dm : dms){
                 logger.debug("DM from " + dm.getSenderScreenName() + ": " + dm.getText());
                 //TODO try to answer
             }
             
-            ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(jec.getScheduler().getContext().getLong(Constants.LAST_TWEET)));
+            ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(var.getLastTweet()));
             
             for(Status mention : mentions){
                 if(!mention.isFavorited() && !mention.isRetweet()){
@@ -50,9 +53,7 @@ public class CheckTwitterMessages implements Job{
             
         } catch (TwitterException ex) {
             logger.error(ex.getMessage());
-        } catch (SchedulerException ex) {
-            logger.error(ex.getMessage());
-        }
+        } 
     }
     
 }
