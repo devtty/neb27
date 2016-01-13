@@ -1,3 +1,10 @@
-The OpenShift `jbossas` cartridge documentation can be found at:
+# neb27k 
 
-https://github.com/openshift/origin-server/tree/master/cartridges/openshift-origin-cartridge-jbossas/README.md
+ * Notify clients about changes
+ * RT [\#neb27](https://twitter.com/hashtag/neb27),[\#Regionalbahndamenklub](https://twitter.com/hashtag/Regionalbahndamenklub) and [\#heidekrautbahn](https://twitter.com/hashtag/heidekrautbahn) 
+ 
+
+
+[![Build Status](https://travis-ci.org/devtty/neb27k.svg?branch=master)](https://travis-ci.org/devtty/neb27k)
+
+* [Twitter](http://twitter.com/neb27k) (@neb27k)
