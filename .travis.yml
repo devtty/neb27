@@ -12,4 +12,4 @@ deploy:
     repo: devtty/neb27
 before_install:
 - openssl aes-256-cbc -K $encrypted_6c24f35a0a4d_key -iv $encrypted_6c24f35a0a4d_iv
-  -in twitter4j.properties.enc -out twitter4j.properties -d
+  -in src/main/resources/twitter4j.properties.enc -out src/main/resources/twitter4j.properties -d
