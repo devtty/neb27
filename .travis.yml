@@ -12,5 +12,7 @@ deploy:
     repo: devtty/neb27
   skip_cleanup: true
 before_install:
-- openssl aes-256-cbc -K $encrypted_6c24f35a0a4d_key -iv $encrypted_6c24f35a0a4d_iv
-  -in src/main/resources/twitter4j.properties.enc -out src/main/resources/twitter4j.properties -d
+  - openssl aes-256-cbc -K $encrypted_6c24f35a0a4d_key -iv $encrypted_6c24f35a0a4d_iv
+    -in src/main/resources/twitter4j.properties.enc -out src/main/resources/twitter4j.properties -d
+before_deploy:
+    - ls src/main/resources
