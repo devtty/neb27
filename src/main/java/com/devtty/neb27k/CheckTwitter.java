@@ -1,5 +1,6 @@
 package com.devtty.neb27k;
 
+import java.util.ArrayList;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
@@ -28,6 +29,9 @@ public class CheckTwitter {
 
     @Schedule(minute = "*/2", hour = "*", persistent = false)
     public void execute() {
+        
+        ArrayList<Long> retweetIds = new ArrayList<>();
+        
         try {
             Twitter twitter = TwitterFactory.getSingleton();
 
@@ -42,11 +46,20 @@ public class CheckTwitter {
                 logger.debug("Tweeet: " + status.getUser().getScreenName() + ": " + status.getText());
                 if (!status.getUser().getScreenName().equals(var.getTweetas()) && !status.isRetweeted()) {
                     logger.debug("Retweet status " + status.getId());
-                    Status rt = twitter.retweetStatus(status.getId());
-                    long id = rt.getId();
-                    var.setLastTweet(id);
+                    retweetIds.add(status.getId());
                 }
             }
+            
+            long last = 0;
+            
+            for(Long retweet: retweetIds){
+                Status rt = twitter.retweetStatus(retweet);
+                last = rt.getId();
+            }
+            
+            if(last>0)
+                var.setLastTweet(last);
+            
         } catch (TwitterException ex) {
             logger.error(ex.getMessage());
         }
