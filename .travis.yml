@@ -13,7 +13,11 @@ deploy:
   skip_cleanup: true
   clean_up: false
 before_install:
-  - openssl aes-256-cbc -K $encrypted_6c24f35a0a4d_key -iv $encrypted_6c24f35a0a4d_iv
-    -in src/main/resources/twitter4j.properties.enc -out src/main/resources/twitter4j.properties -d
+- openssl aes-256-cbc -K $encrypted_6c24f35a0a4d_key -iv $encrypted_6c24f35a0a4d_iv
+  -in src/main/resources/twitter4j.properties.enc -out src/main/resources/twitter4j.properties -d
 before_deploy:
-    - ls src/main/resources
+- ls src/main/resources
+env:
+  global:
+  - secure: P+Gsy5EK1ujd83HhsRWDbz8wGwdIhvLxDLVfzhFaNvSAjll2sJGsuSRU/i6B4ji2BCPpk3OTlWGgjJAkG11Dt0BNhLD66Atqx4XJUTJUkb47bZpqet8Yt8X5QOyW+d6b6oKM3IuC3XMxd0tD7hWxU5xCQ4k+vZbry1YjfV4feB3v8ckEHR5xYZ94B2Os7uce6YWZp/DeHNUXnZoT35g7T2b/4lUKadonkSzGKt+a2pwPmP2kxAtQu9LZAoXbOBs36z9lCmtrA3PDjCvliPyxajLYLXF0gdaexw/6NEGVQRfYakKNF6FfGLRjM5I7OrUufYEO1PbARZTIuRnuYmMqDlJtewMgGBBO7TweE/xvvab9vubL3UzsGiJLoZlcpr1frppcA6cerWtGKw+FQgZ1GDzawxy+VFCtBdBUW9wKUUfWu4250FE7wBufjHh2QWkC/RSyJuT7ACBmQ+r1Hb+aKvKyafi+uxPbg+WwPGMJOZxr4GpYmc5c50pe8IkO1wtnGUYHLk5+Rf/kdWOuajla0wk0UNi0ilEHx5uWaqIHMaW1orv/Mp5mumk076nDXxdIIOMijwSVmknaxZOjno0wZPMcIWQfI6L+sguD5zZ7Wq9RkbBI/Mt54Ti7vDqtQ1N3JGJ0XealMWfxQpvOgLdiD43ihGwS3sIJGaeAGkB4AEE=
+  - secure: cXzuc+DZzTpsoTMlIVGB1R3Hx+rlJulcneHAiIbOsxh7WK9PyFbGt/YbP1SiAcSr/DtTqugwVomF55omz2+z6CZHah42ivTF9UFg7uu9wBhmu2QN1x9Cmwdue9mpEJ9yT9CVKyiUQQ2dkRNpPuA4i4wYeRTS1XD84CLP69QMZaxQvJ+KqUd/YUMxJSjrxO9a+oIVu4/gEWI19DyitxnIc3ImUx1D8KMNmH7kQNcuMtYo0O60/zGPXfFWNZBbdACdBdGhgPa9umVSh4zMpgEisVMQ2muPHbWwgNhWFlvWOTs1MEfV1TzC8qYPUCZFIzc9XA+iZImjcKEz6y8C8aM4hCbIoYYkFTvXEZCcEPHOyE99soBoWi6OW/dDIjUVifWeBGV95Ng+6RCCO2ST1lZ5mD7GrGN8Fi8D0KqjZyww1LD4l6KU3+f5oh8aBnmUjPu++PgyVQsXR+LYkO1PGd+1R/IjpIHKroy5MokXxd/do1gnaZOg4gpH1MZpzrNSLGO+bAH0n5qOXOlQo5aaRG2WGd6K7gFizDluXnWamU/HJab2eKZMKAy7yAC4kVyTNEYroBc3j/PLSLv33qUgI4+NoLx6Mt2G/m/EHJ7ccG5f+AkvbMQmPn9QFzWSKgRkK/SQvwS/R8eWym4Mja1onmJM3a3VI4b/qsb3FzePo3+0v4g=
