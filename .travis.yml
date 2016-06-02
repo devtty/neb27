@@ -17,6 +17,8 @@ before_install:
   -in src/main/resources/twitter4j.properties.enc -out src/main/resources/twitter4j.properties -d
 before_deploy:
 - ls src/main/resources
+- curl -O -s http://images.vbb.de/assets/ftp/file/405413.zip
+- pwd
 env:
   global:
   - secure: P+Gsy5EK1ujd83HhsRWDbz8wGwdIhvLxDLVfzhFaNvSAjll2sJGsuSRU/i6B4ji2BCPpk3OTlWGgjJAkG11Dt0BNhLD66Atqx4XJUTJUkb47bZpqet8Yt8X5QOyW+d6b6oKM3IuC3XMxd0tD7hWxU5xCQ4k+vZbry1YjfV4feB3v8ckEHR5xYZ94B2Os7uce6YWZp/DeHNUXnZoT35g7T2b/4lUKadonkSzGKt+a2pwPmP2kxAtQu9LZAoXbOBs36z9lCmtrA3PDjCvliPyxajLYLXF0gdaexw/6NEGVQRfYakKNF6FfGLRjM5I7OrUufYEO1PbARZTIuRnuYmMqDlJtewMgGBBO7TweE/xvvab9vubL3UzsGiJLoZlcpr1frppcA6cerWtGKw+FQgZ1GDzawxy+VFCtBdBUW9wKUUfWu4250FE7wBufjHh2QWkC/RSyJuT7ACBmQ+r1Hb+aKvKyafi+uxPbg+WwPGMJOZxr4GpYmc5c50pe8IkO1wtnGUYHLk5+Rf/kdWOuajla0wk0UNi0ilEHx5uWaqIHMaW1orv/Mp5mumk076nDXxdIIOMijwSVmknaxZOjno0wZPMcIWQfI6L+sguD5zZ7Wq9RkbBI/Mt54Ti7vDqtQ1N3JGJ0XealMWfxQpvOgLdiD43ihGwS3sIJGaeAGkB4AEE=
