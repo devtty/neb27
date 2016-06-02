@@ -6,6 +6,12 @@
         <title>Facelet Title</title>
     </h:head>
     <h:body>
+        <h:panelGrid>
+            <h:panelGroup>
+                <h:graphicImage value="img/logo.gif" style="width:45%;"/>
+                <h:graphicImage value="img/2658.gif"/>
+            </h:panelGroup>
+        </h:panelGrid>
         <h:panelGrid columns="2">
             <h:outputLabel value="TweetAs" for="tweetas"/>
             <h:outputText id="tweetas" value="#{var.tweetas}"/>
@@ -17,16 +23,6 @@
                     Test<h:outputText value="#{change}" />
                 </h:column>
             </h:dataTable>
-            <h:outputLabel value="stopcountDB" for="stops"/>
-            <h:outputLabel id= "stops" value="#{gtfsData.count}" />
-            <h:outputLabel value="routenames" for="rn"/>
-            <h:dataTable id="rn" var="change" value="#{gtfsData.routenames}">
-                <h:column>
-                    <h:outputText value="#{change}" />
-                </h:column>
-            </h:dataTable>
-            <h:outputLabel value="reqWan" for="reqWan"/>
-            <h:outputLabel id= "reqWan" value="#{gtfsData.reqWan}" />
         </h:panelGrid>
     </h:body>
 </html>
