@@ -35,7 +35,7 @@ public class CheckChanges {
 
     Logger logger = LoggerFactory.getLogger(CheckChanges.class);
 
-    @Schedule(minute = "*/30", hour = "*", persistent = false)
+    @Schedule(minute = "*/5", hour = "*", persistent = false)
     public void execute() {
 
         try {
@@ -45,7 +45,11 @@ public class CheckChanges {
                 logger.debug("Changes Amount: {}", changes.size());
                 if (changes.size() > 0) {
                     notifyClients();
+                }else{
+                    LaMetric lm = new LaMetric();
+                    lm.push("ok");
                 }
+                
             }
         } catch (IOException | TwitterException ex) {
             logger.error(ex.getMessage());
@@ -91,6 +95,8 @@ public class CheckChanges {
 
         List<String> changes = var.getChanges();
 
+        int count = 0;
+        
         for (String c : changes) {
             logger.debug("Change is: " + c);
             if (c.length() > 130) {
@@ -103,9 +109,16 @@ public class CheckChanges {
 
                 Status update = twitter.updateStatus(c);
                 var.setLastTweet(update.getId());
-
+                count++;
             }
         }
+        
+        LaMetric lm = new LaMetric();
+        
+        if(count>0){
+            lm.push("Kapoot" + count);
+        }
+            
     }
 
     private List<String> getTweetsToday() throws TwitterException {
