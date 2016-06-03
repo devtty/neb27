@@ -6,10 +6,7 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-/twitter4j.properties
 /nb-configuration.xml
 /nbproject/
 /nbactions.xml
 /deployments/ROOT.war
-/src/main/resources/vbb_gtfs.zip
-/src/main/resources/twitter4j.properties
