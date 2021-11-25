@@ -25,7 +25,7 @@ public class CheckTwitter {
     Logger logger = LoggerFactory.getLogger(CheckTwitter.class);
 
     @Inject
-    Var var;
+    TwitterContentProxy twitterContentProxy;
 
     @Schedule(minute = "*/2", hour = "*", persistent = false)
     public void execute() {
@@ -38,13 +38,13 @@ public class CheckTwitter {
             Query query = new Query("#neb27 OR #Regionalbahndamenklub OR #heidekrautbahn");
             query.setResultType(Query.ResultType.recent);
 
-            query.setSinceId(var.getLastTweet());
+            query.setSinceId(twitterContentProxy.getLastTweet());
 
             QueryResult result = twitter.search(query);
 
             for (Status status : result.getTweets()) {
                 logger.debug("Tweeet: " + status.getUser().getScreenName() + ": " + status.getText());
-                if (!status.getUser().getScreenName().equals(var.getTweetas()) && !status.isRetweeted()) {
+                if (!status.getUser().getScreenName().equals(twitterContentProxy.getTweetas()) && !status.isRetweeted()) {
                     logger.debug("Retweet status " + status.getId());
                     retweetIds.add(status.getId());
                 }
@@ -58,7 +58,7 @@ public class CheckTwitter {
             }
             
             if(lastTweetId>0)
-                var.setLastTweet(lastTweetId);
+                twitterContentProxy.setLastTweet(lastTweetId);
             
         } catch (TwitterException ex) {
             logger.error(ex.getMessage());

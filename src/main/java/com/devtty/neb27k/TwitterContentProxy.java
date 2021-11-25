@@ -22,9 +22,9 @@ import twitter4j.TwitterFactory;
  */
 @Named
 @ApplicationScoped
-public class Var {
+public class TwitterContentProxy {
     
-    Logger logger = LoggerFactory.getLogger(Var.class);
+    Logger logger = LoggerFactory.getLogger(TwitterContentProxy.class);
     
     private long lastTweet = 684360872010059776L;
     private List<String> changes;

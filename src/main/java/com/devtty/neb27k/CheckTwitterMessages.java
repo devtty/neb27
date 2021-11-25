@@ -30,7 +30,7 @@ public class CheckTwitterMessages{
     Logger logger = LoggerFactory.getLogger(CheckTwitterMessages.class);
     
     @Inject
-    Var var;
+    TwitterContentProxy twitterContentProxy;
     
     @Inject
     GtfsData gtfs;
@@ -62,7 +62,7 @@ public class CheckTwitterMessages{
                 
             }
             
-            ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(var.getLastTweet()));
+            ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(twitterContentProxy.getLastTweet()));
             
             for(Status mention : mentions){
                 if(!mention.isFavorited() && !mention.isRetweet()){

@@ -34,7 +34,7 @@ public class CheckChanges {
     public final static int WARNING_MSG_END_POSITION = 145;
     
     @Inject
-    Var var;
+    TwitterContentProxy twitterContentProxy;
 
     Logger logger = LoggerFactory.getLogger(CheckChanges.class);
 
@@ -43,7 +43,7 @@ public class CheckChanges {
 
         try {
             checkMainPage();
-            List<String> changes = var.getChanges();
+            List<String> changes = twitterContentProxy.getChanges();
             if (changes != null) {
                 logger.debug("Changes Amount: {}", changes.size());
                 if (changes.size() > 0) {
@@ -69,7 +69,7 @@ public class CheckChanges {
             logger.debug("MainPageLine: {}", message.text());
             if (message.text().contains(Constants.RB27)) {
                 changes.add(message.text());
-                var.setChanges(changes);
+                twitterContentProxy.setChanges(changes);
             }
         }
     }
@@ -96,7 +96,7 @@ public class CheckChanges {
         logger.debug("notifying clients");
         List tweetsToday = getTweetsToday();
 
-        List<String> changes = var.getChanges();
+        List<String> changes = twitterContentProxy.getChanges();
 
         int count = 0;
         
@@ -111,7 +111,7 @@ public class CheckChanges {
                 Twitter twitter = TwitterFactory.getSingleton();
 
                 Status update = twitter.updateStatus(change);
-                var.setLastTweet(update.getId());
+                twitterContentProxy.setLastTweet(update.getId());
                 count++;
             }
         }
