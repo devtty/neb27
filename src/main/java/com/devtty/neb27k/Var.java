@@ -70,7 +70,7 @@ public class Var {
             logger.error(ex.getErrorMessage());
         } catch (IllegalStateException isx){
             health = health();
-        }
+        }   
     }
     
     private String health(){
