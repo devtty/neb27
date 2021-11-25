@@ -54,7 +54,7 @@ public class CheckChanges {
                 }
                 
             }
-        } catch (IOException | TwitterException ex) {
+        } catch (IOException ex) {
             logger.error(ex.getMessage());
         }
 
@@ -77,7 +77,7 @@ public class CheckChanges {
         }
     }
 
-    private void notifyClients() throws TwitterException {
+    private void notifyClients(){
         logger.debug("notifying clients");
         List tweetsToday = getTweetsToday();
 
@@ -95,9 +95,14 @@ public class CheckChanges {
                 logger.debug("Tweet: {}", change);
                 Twitter twitter = TwitterFactory.getSingleton();
 
-                Status update = twitter.updateStatus(change);
-                twitterContentProxy.setLastTweet(update.getId());
-                count++;
+                Status update;
+                try {
+                    update = twitter.updateStatus(change);
+                    twitterContentProxy.setLastTweet(update.getId());
+                    count++;
+                } catch (TwitterException ex) {
+                    logger.error(ex.getMessage());
+                }
             }
         }
         
@@ -109,7 +114,7 @@ public class CheckChanges {
             
     }
 
-    private List<String> getTweetsToday() throws TwitterException {
+    private List<String> getTweetsToday() {
         List<String> tweetsToday = new ArrayList<>();
 
         Twitter twitter = TwitterFactory.getSingleton();
@@ -120,12 +125,18 @@ public class CheckChanges {
         midnight.set(Calendar.SECOND, 0);
         midnight.set(Calendar.MILLISECOND, 0);
 
-        ResponseList<Status> lastTweets = twitter.getUserTimeline();
+        ResponseList<Status> lastTweets;
+        try {
+            lastTweets = twitter.getUserTimeline();
+       
 
-        lastTweets.stream().filter((s) -> (!s.isRetweet() && s.getCreatedAt().after(midnight.getTime()))).forEach((s) -> {
-            tweetsToday.add(s.getText());
-        });
-
+            lastTweets.stream().filter((s) -> (!s.isRetweet() && s.getCreatedAt().after(midnight.getTime()))).forEach((s) -> {
+                tweetsToday.add(s.getText());
+            });
+ 
+            } catch (TwitterException ex) {
+                logger.error(ex.getMessage());
+            }
         return tweetsToday;
     }
 

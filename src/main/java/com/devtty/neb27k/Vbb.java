@@ -119,6 +119,7 @@ public class Vbb {
                     lateMessage = " mit " + (difference / MINUTE_IN_MILLISECONDS) + " min Verspätung";
                 
             } catch (ParseException ex) {
+                logger.error(ex.getMessage());
             }
         }
         
