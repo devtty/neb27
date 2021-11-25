@@ -60,6 +60,9 @@ public class CheckChanges {
 
     }
 
+    /*
+    * check neb mainpage for change message on train line RB27
+    */
     private void checkMainPage() throws IOException {
         Document mainPage = Jsoup.connect(Constants.URL_MAIN).get();
         Elements messageList = mainPage.select(Constants.CSS_SEARCH_WARNING);
@@ -73,24 +76,6 @@ public class CheckChanges {
             }
         }
     }
-
-    /*
-    private boolean checkChangesPage(JobExecutionContext jec) throws SchedulerException, IOException {
-        boolean change = false;
-        Document doc = Jsoup.connect(Constants.URL_CHANGES).get();
-        Elements line = doc.select(Constants.CSS_SEARCH_NEWS);
-        List<String> changes = (List<String>) jec.getScheduler().getContext().get(Constants.CHANGES);
-        for (Element e : line) {
-            if (e.text().equals(Constants.NO_CHANGES)) {
-                logger.debug("No traffic changes");
-                change = true;
-            } else {
-                logger.debug("handle change--- IMPLEMENT!");
-                //tweet if not already sent in the last 24h
-            }
-        }
-        return change;
-    }*/
 
     private void notifyClients() throws TwitterException {
         logger.debug("notifying clients");

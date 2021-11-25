@@ -14,7 +14,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * Preload GTFS data
+ * Preload GTFS data from Hafas (DB-Bahnauskunft) - Service
+ * provided by a ZIP file
  * 
  * @author Denis Renning <denis at devtty.de>
  */

@@ -17,7 +17,8 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 /**
- *
+ * A placeholder for twitter related data
+ * 
  * @author Denis Renning <denis at devtty.de>
  */
 @Named
@@ -73,6 +74,8 @@ public class TwitterContentProxy {
         }   
     }
     
+    // currently not useful but could be in future
+    // don't delete
     private String health(){
         String s = "";
         

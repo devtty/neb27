@@ -1,7 +1,8 @@
 package com.devtty.neb27k;
 
 /**
- *
+ * Constants used in several parts of the application
+ * 
  * @author Denis
  */
 public class Constants {

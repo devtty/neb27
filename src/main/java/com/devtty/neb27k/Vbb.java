@@ -20,7 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class queries Hafas (DB-Bahnauskunft) - Liveservice
+ * and calculates late minutes for detected train services
+ * 
  * @author Denis Renning
  */
 public class Vbb {

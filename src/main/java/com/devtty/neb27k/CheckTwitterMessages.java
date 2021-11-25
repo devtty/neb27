@@ -48,8 +48,7 @@ public class CheckTwitterMessages{
             
             for(DirectMessage dm : dms){
                 logger.debug("DM from " + dm.getSenderScreenName() + ": " + dm.getText());
-                //TODO try to answer 
-
+                
                 List<Stop> stops = getStopsFromMessage(dm.getText());
 
                 String str = respond(stops);
@@ -64,10 +63,10 @@ public class CheckTwitterMessages{
             
             ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(twitterContentProxy.getLastTweet()));
             
+            // give a star when somebody retweets me
             for(Status mention : mentions){
                 if(!mention.isFavorited() && !mention.isRetweet()){
                     twitter.createFavorite(mention.getId());
-                    //TODO try to answer
                 }
                 logger.debug("Mention from " + mention.getUser().getScreenName());
             }

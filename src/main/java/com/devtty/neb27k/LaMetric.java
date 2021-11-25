@@ -37,6 +37,11 @@ public class LaMetric {
         
     }
 
+    /**
+     * pushes a message text to LaMetric device
+     * 
+     * @param messageText
+     */
     public void push(String messageText) {
         accessToken = System.getenv("lametricAccessToken");
         
