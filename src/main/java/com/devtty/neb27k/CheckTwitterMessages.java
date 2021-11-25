@@ -44,7 +44,7 @@ public class CheckTwitterMessages{
             Twitter twitter = TwitterFactory.getSingleton();
             
             //only DMs recieved after the last response
-            ResponseList<DirectMessage> dms = twitter.getDirectMessages(new Paging(twitter.getSentDirectMessages(new Paging(1)).get(0).getId()));
+            ResponseList<DirectMessage> dms = twitter.getDirectMessages(new Paging(twitter.getSentDirectMessages(new Paging(Constants.PAGING_OFFSET)).get(0).getId()));
             
             for(DirectMessage dm : dms){
                 logger.debug("DM from " + dm.getSenderScreenName() + ": " + dm.getText());

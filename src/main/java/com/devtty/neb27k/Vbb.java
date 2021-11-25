@@ -25,6 +25,11 @@ import org.slf4j.LoggerFactory;
  */
 public class Vbb {
 
+    private static final int HAFAS_QUERY_LOCATION_MAX_JOURNEYS = 5;
+    private static final int HAFAS_QUERY_DEPARTURE_MAX_JOURNEYS = 3;
+    private static final int TIME_STRING_OFFSET_LENGTH = 5;
+    private static final int MINUTE_IN_MILLISECONDS = 60000;
+    
     private static final String VBB_PROXY = "http://demo.hafas.de/openapi/vbb-proxy";
     
     Logger logger = LoggerFactory.getLogger(Vbb.class);
@@ -42,7 +47,7 @@ public class Vbb {
                 .add("departureBoard", Json.createObjectBuilder()
                         .add("accessId", accessId)
                         .add("id", id)
-                        .add("maxJourneys", 5)
+                        .add("maxJourneys", HAFAS_QUERY_LOCATION_MAX_JOURNEYS)
                 )
                 .build();
 
@@ -58,7 +63,7 @@ public class Vbb {
 
         String extId = null;
 
-        if (rl.getStatus() == 200) {
+        if (rl.getStatus() == Response.Status.OK.getStatusCode()) {
 
             LocationList locations = rl.readEntity(LocationList.class);
 
@@ -77,7 +82,7 @@ public class Vbb {
             WebTarget target = client.target(VBB_PROXY).path("/departureBoard")
                     .queryParam("accessId", accessId)
                     .queryParam("id", extId)
-                    .queryParam("maxJourneys", 3)
+                    .queryParam("maxJourneys", HAFAS_QUERY_DEPARTURE_MAX_JOURNEYS)
                     .queryParam("format", "json");
 
             Response response = target.request().accept(MediaType.APPLICATION_JSON).get();
@@ -86,7 +91,7 @@ public class Vbb {
 
             for (Departure dep : board.getDeparture()) {
                 String late = calculateLate(dep.getDate(), dep.getTime(), dep.getRtDate(), dep.getRtTime());
-                r = r + dep.getTime().substring(0,5) + " nach " + dep.getDirection() + late +  " - ";
+                r = r + dep.getTime().substring(0,TIME_STRING_OFFSET_LENGTH) + " nach " + dep.getDirection() + late +  " - ";
                 
             }
 
@@ -106,10 +111,10 @@ public class Vbb {
                 Date date1 = df.parse(date+time);
                 Date date2 = df.parse(rtDate+rtTime);
                 
-                long difference = (date2.getTime() - date1.getTime()) / 60000;
+                long difference = (date2.getTime() - date1.getTime()) / MINUTE_IN_MILLISECONDS;
                 
                 if(difference >= 1)
-                    late = " mit " + (difference / 60000) + " min Verspätung";
+                    late = " mit " + (difference / MINUTE_IN_MILLISECONDS) + " min Verspätung";
                 
             } catch (ParseException ex) {
             }
@@ -117,7 +122,7 @@ public class Vbb {
         
         return late;
     }
-
+    
    
     
 }

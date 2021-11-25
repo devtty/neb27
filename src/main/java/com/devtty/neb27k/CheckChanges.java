@@ -30,6 +30,9 @@ import twitter4j.TwitterFactory;
 @Singleton
 public class CheckChanges {
 
+    public final static int WARNING_MSG_START_POSITION = 6;
+    public final static int WARNING_MSG_END_POSITION = 145;
+    
     @Inject
     Var var;
 
@@ -100,7 +103,7 @@ public class CheckChanges {
         for (String c : changes) {
             logger.debug("Change is: " + c);
             if (c.length() > 130) {
-                c = c.substring(6, 145);
+                c = c.substring(WARNING_MSG_START_POSITION, WARNING_MSG_END_POSITION);
             }
 
             if (!tweetsToday.contains(c)) {

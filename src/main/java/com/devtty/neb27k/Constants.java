@@ -16,4 +16,6 @@ public class Constants {
     
     public final static String URL_MAIN = "http://www.neb.de/";
     public final static String URL_CHANGES = "http://www.neb.de/service/baustellenfahrplanaenderungen/";
+    
+    public final static int PAGING_OFFSET = 1;
 }

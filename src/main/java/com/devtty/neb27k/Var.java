@@ -65,7 +65,7 @@ public class Var {
         try {
             Twitter twitter = TwitterFactory.getSingleton();
             tweetas = twitter.getScreenName();
-            lastTweet = twitter.getHomeTimeline(new Paging(1)).get(0).getId();
+            lastTweet = twitter.getHomeTimeline(new Paging(Constants.PAGING_OFFSET)).get(0).getId();
         } catch (TwitterException ex) {
             logger.error(ex.getErrorMessage());
         } catch (IllegalStateException isx){
