@@ -105,7 +105,7 @@ public class CheckTwitterMessages{
             // next departure on this station
             Vbb vbb = new Vbb();
             
-            r = vbb.nextService(stops.get(0).getName());
+            r = vbb.queryNextServiceAndReturnMessage(stops.get(0).getName());
             
         } else if(stops.size()==2){
             // next departure in this direction

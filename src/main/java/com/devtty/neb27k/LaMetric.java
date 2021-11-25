@@ -37,20 +37,20 @@ public class LaMetric {
         
     }
 
-    public void push(String str) {
+    public void push(String messageText) {
         accessToken = System.getenv("lametricAccessToken");
         
         JsonObject message = Json.createObjectBuilder()
                 .add("frames", Json.createObjectBuilder()
                         .add("index", 0)
-                        .add("text", str)
+                        .add("text", messageText)
                         .add("icon", "i1347")
                 )
                 .build();
       
-        Client client = new ResteasyClientBuilder().build();      
+        Client restClient = new ResteasyClientBuilder().build();      
         
-        WebTarget target = client.target(LAMETRIC_DEV_CON).path(LAMETRIC_WIDGET_URI);
+        WebTarget target = restClient.target(LAMETRIC_DEV_CON).path(LAMETRIC_WIDGET_URI);
         
         CacheControl cacheControl = new CacheControl();
         cacheControl.setNoCache(true);

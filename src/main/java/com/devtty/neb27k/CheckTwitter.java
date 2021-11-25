@@ -50,15 +50,15 @@ public class CheckTwitter {
                 }
             }
             
-            long last = 0;
+            long lastTweetId = 0;
             
-            for(Long retweet: retweetIds){
-                Status rt = twitter.retweetStatus(retweet);
-                last = rt.getId();
+            for(Long retweetId: retweetIds){
+                Status retweetStatus = twitter.retweetStatus(retweetId);
+                lastTweetId = retweetStatus.getId();
             }
             
-            if(last>0)
-                var.setLastTweet(last);
+            if(lastTweetId>0)
+                var.setLastTweet(lastTweetId);
             
         } catch (TwitterException ex) {
             logger.error(ex.getMessage());

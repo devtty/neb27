@@ -61,14 +61,14 @@ public class CheckChanges {
     }
 
     private void checkMainPage() throws IOException {
-        Document doc = Jsoup.connect(Constants.URL_MAIN).get();
-        Elements line = doc.select(Constants.CSS_SEARCH_WARNING);
+        Document mainPage = Jsoup.connect(Constants.URL_MAIN).get();
+        Elements messageList = mainPage.select(Constants.CSS_SEARCH_WARNING);
         List<String> changes = new ArrayList<>();
 
-        for (Element e : line) {
-            logger.debug("MainPageLine: {}", e.text());
-            if (e.text().contains(Constants.RB27)) {
-                changes.add(e.text());
+        for (Element message : messageList) {
+            logger.debug("MainPageLine: {}", message.text());
+            if (message.text().contains(Constants.RB27)) {
+                changes.add(message.text());
                 var.setChanges(changes);
             }
         }
@@ -100,17 +100,17 @@ public class CheckChanges {
 
         int count = 0;
         
-        for (String c : changes) {
-            logger.debug("Change is: " + c);
-            if (c.length() > 130) {
-                c = c.substring(WARNING_MSG_START_POSITION, WARNING_MSG_END_POSITION);
+        for (String change : changes) {
+            logger.debug("Change is: " + change);
+            if (change.length() > 130) {
+                change = change.substring(WARNING_MSG_START_POSITION, WARNING_MSG_END_POSITION);
             }
 
-            if (!tweetsToday.contains(c)) {
-                logger.debug("Tweet: {}", c);
+            if (!tweetsToday.contains(change)) {
+                logger.debug("Tweet: {}", change);
                 Twitter twitter = TwitterFactory.getSingleton();
 
-                Status update = twitter.updateStatus(c);
+                Status update = twitter.updateStatus(change);
                 var.setLastTweet(update.getId());
                 count++;
             }
