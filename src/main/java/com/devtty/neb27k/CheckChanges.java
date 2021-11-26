@@ -1,8 +1,14 @@
 package com.devtty.neb27k;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ejb.Schedule;
@@ -119,18 +125,11 @@ public class CheckChanges {
 
         Twitter twitter = TwitterFactory.getSingleton();
 
-        Calendar midnight = new GregorianCalendar();
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 0);
-        midnight.set(Calendar.MILLISECOND, 0);
-
         ResponseList<Status> lastTweets;
         try {
             lastTweets = twitter.getUserTimeline();
-       
 
-            lastTweets.stream().filter((s) -> (!s.isRetweet() && s.getCreatedAt().after(midnight.getTime()))).forEach((s) -> {
+            lastTweets.stream().filter((s) -> (isFromTodayAndNoRetweet(s))).forEach((s) -> {
                 tweetsToday.add(s.getText());
             });
  
@@ -138,6 +137,16 @@ public class CheckChanges {
                 logger.error(ex.getMessage());
             }
         return tweetsToday;
+    }
+
+    private boolean isFromTodayAndNoRetweet(Status s) {
+        return !s.isRetweet() && s.getCreatedAt().after(getStartTimeOfToday());
+    }
+    
+    private Date getStartTimeOfToday(){
+        LocalDateTime midnight = LocalDate.now().atStartOfDay();
+        Date convertedDate = Date.from(midnight.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+        return convertedDate;
     }
 
 }
