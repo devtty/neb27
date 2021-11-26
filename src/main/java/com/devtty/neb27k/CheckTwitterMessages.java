@@ -82,12 +82,11 @@ public class CheckTwitterMessages{
         
         List<Stop> stops = new ArrayList<>();
 
-        String[] str = msg.split("\\u0020");
+        String[] messages = msg.split("\\u0020");
 
-        for (int x = 0; x < str.length; x++) {
+        for (String message : messages) {
             for (Stop stop : gtfs.getStore().getAllStops()) {
-               
-                if (compare(stop.getName(), str[x])) {
+                if (compare(stop.getName(), message)) {
                     logger.debug("CHK TOKEN: " + stop.getName());
                     stops.add(stop);
                 }
