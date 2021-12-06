@@ -20,7 +20,6 @@
 
   <!-- holt Abhängigkeiten vom maven central repository -->
   <target name="get_dependencies" depends="init">
-    <setproxy proxyhost="proxy.dbtg.btg" proxyport="8000"/>
     <get dest="${dist}/lib/">
       <url url="https://repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0.jar"/>
       <url url="https://repo1.maven.org/maven2/org/jboss/resteasy/resteasy-client/3.0.6.Final/resteasy-client-3.0.6.Final.jar"/>
