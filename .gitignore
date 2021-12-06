@@ -10,3 +10,9 @@ buildNumber.properties
 /nbproject/
 /nbactions.xml
 /deployments/ROOT.war
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
