@@ -17,14 +17,15 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 /**
- *
+ * A placeholder for twitter related data
+ * 
  * @author Denis Renning <denis at devtty.de>
  */
 @Named
 @ApplicationScoped
-public class Var {
+public class TwitterContentProxy {
     
-    Logger logger = LoggerFactory.getLogger(Var.class);
+    Logger logger = LoggerFactory.getLogger(TwitterContentProxy.class);
     
     private long lastTweet = 684360872010059776L;
     private List<String> changes;
@@ -65,14 +66,16 @@ public class Var {
         try {
             Twitter twitter = TwitterFactory.getSingleton();
             tweetas = twitter.getScreenName();
-            lastTweet = twitter.getHomeTimeline(new Paging(1)).get(0).getId();
+            lastTweet = twitter.getHomeTimeline(new Paging(Constants.PAGING_OFFSET)).get(0).getId();
         } catch (TwitterException ex) {
             logger.error(ex.getErrorMessage());
         } catch (IllegalStateException isx){
             health = health();
-        }
+        }   
     }
     
+    // currently not useful but could be in future
+    // don't delete
     private String health(){
         String s = "";
         

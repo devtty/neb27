@@ -30,7 +30,7 @@ public class CheckTwitterMessages{
     Logger logger = LoggerFactory.getLogger(CheckTwitterMessages.class);
     
     @Inject
-    Var var;
+    TwitterContentProxy twitterContentProxy;
     
     @Inject
     GtfsData gtfs;
@@ -44,12 +44,11 @@ public class CheckTwitterMessages{
             Twitter twitter = TwitterFactory.getSingleton();
             
             //only DMs recieved after the last response
-            ResponseList<DirectMessage> dms = twitter.getDirectMessages(new Paging(twitter.getSentDirectMessages(new Paging(1)).get(0).getId()));
+            ResponseList<DirectMessage> dms = twitter.getDirectMessages(new Paging(twitter.getSentDirectMessages(new Paging(Constants.PAGING_OFFSET)).get(0).getId()));
             
             for(DirectMessage dm : dms){
                 logger.debug("DM from " + dm.getSenderScreenName() + ": " + dm.getText());
-                //TODO try to answer 
-
+                
                 List<Stop> stops = getStopsFromMessage(dm.getText());
 
                 String str = respond(stops);
@@ -62,12 +61,12 @@ public class CheckTwitterMessages{
                 
             }
             
-            ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(var.getLastTweet()));
+            ResponseList<Status> mentions = twitter.getMentionsTimeline(new Paging(twitterContentProxy.getLastTweet()));
             
+            // give a star when somebody retweets me
             for(Status mention : mentions){
                 if(!mention.isFavorited() && !mention.isRetweet()){
                     twitter.createFavorite(mention.getId());
-                    //TODO try to answer
                 }
                 logger.debug("Mention from " + mention.getUser().getScreenName());
             }
@@ -83,12 +82,11 @@ public class CheckTwitterMessages{
         
         List<Stop> stops = new ArrayList<>();
 
-        String[] str = msg.split("\\u0020");
+        String[] messages = msg.split("\\u0020");
 
-        for (int x = 0; x < str.length; x++) {
+        for (String message : messages) {
             for (Stop stop : gtfs.getStore().getAllStops()) {
-               
-                if (compare(stop.getName(), str[x])) {
+                if (compare(stop.getName(), message)) {
                     logger.debug("CHK TOKEN: " + stop.getName());
                     stops.add(stop);
                 }
@@ -105,7 +103,7 @@ public class CheckTwitterMessages{
             // next departure on this station
             Vbb vbb = new Vbb();
             
-            r = vbb.nextService(stops.get(0).getName());
+            r = vbb.queryNextServiceAndReturnMessage(stops.get(0).getName());
             
         } else if(stops.size()==2){
             // next departure in this direction

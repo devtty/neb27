@@ -1,8 +1,14 @@
 package com.devtty.neb27k;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import javax.ejb.Schedule;
@@ -30,8 +36,11 @@ import twitter4j.TwitterFactory;
 @Singleton
 public class CheckChanges {
 
+    public final static int WARNING_MSG_START_POSITION = 6;
+    public final static int WARNING_MSG_END_POSITION = 145;
+    
     @Inject
-    Var var;
+    TwitterContentProxy twitterContentProxy;
 
     Logger logger = LoggerFactory.getLogger(CheckChanges.class);
 
@@ -40,7 +49,7 @@ public class CheckChanges {
 
         try {
             checkMainPage();
-            List<String> changes = var.getChanges();
+            List<String> changes = twitterContentProxy.getChanges();
             if (changes != null) {
                 logger.debug("Changes Amount: {}", changes.size());
                 if (changes.size() > 0) {
@@ -51,65 +60,55 @@ public class CheckChanges {
                 }
                 
             }
-        } catch (IOException | TwitterException ex) {
+        } catch (IOException ex) {
             logger.error(ex.getMessage());
         }
 
     }
 
+    /*
+    * check neb mainpage for change message on train line RB27
+    */
     private void checkMainPage() throws IOException {
-        Document doc = Jsoup.connect(Constants.URL_MAIN).get();
-        Elements line = doc.select(Constants.CSS_SEARCH_WARNING);
+        Document mainPage = Jsoup.connect(Constants.URL_MAIN).get();
+        Elements messageList = mainPage.select(Constants.CSS_SEARCH_WARNING);
         List<String> changes = new ArrayList<>();
 
-        for (Element e : line) {
-            logger.debug("MainPageLine: {}", e.text());
-            if (e.text().contains(Constants.RB27)) {
-                changes.add(e.text());
-                var.setChanges(changes);
+        for (Element message : messageList) {
+            logger.debug("MainPageLine: {}", message.text());
+            if (message.text().contains(Constants.RB27)) {
+                changes.add(message.text());
+                twitterContentProxy.setChanges(changes);
             }
         }
     }
 
-    /*
-    private boolean checkChangesPage(JobExecutionContext jec) throws SchedulerException, IOException {
-        boolean change = false;
-        Document doc = Jsoup.connect(Constants.URL_CHANGES).get();
-        Elements line = doc.select(Constants.CSS_SEARCH_NEWS);
-        List<String> changes = (List<String>) jec.getScheduler().getContext().get(Constants.CHANGES);
-        for (Element e : line) {
-            if (e.text().equals(Constants.NO_CHANGES)) {
-                logger.debug("No traffic changes");
-                change = true;
-            } else {
-                logger.debug("handle change--- IMPLEMENT!");
-                //tweet if not already sent in the last 24h
-            }
-        }
-        return change;
-    }*/
-
-    private void notifyClients() throws TwitterException {
+    private void notifyClients(){
         logger.debug("notifying clients");
         List tweetsToday = getTweetsToday();
 
-        List<String> changes = var.getChanges();
+        List<String> changes = twitterContentProxy.getChanges();
 
         int count = 0;
         
-        for (String c : changes) {
-            logger.debug("Change is: " + c);
-            if (c.length() > 130) {
-                c = c.substring(6, 145);
+        for (String change : changes) {
+            logger.debug("Change is: " + change);
+            if (change.length() > 130) {
+                change = change.substring(WARNING_MSG_START_POSITION, WARNING_MSG_END_POSITION);
             }
 
-            if (!tweetsToday.contains(c)) {
-                logger.debug("Tweet: {}", c);
+            if (!tweetsToday.contains(change)) {
+                logger.debug("Tweet: {}", change);
                 Twitter twitter = TwitterFactory.getSingleton();
 
-                Status update = twitter.updateStatus(c);
-                var.setLastTweet(update.getId());
-                count++;
+                Status update;
+                try {
+                    update = twitter.updateStatus(change);
+                    twitterContentProxy.setLastTweet(update.getId());
+                    count++;
+                } catch (TwitterException ex) {
+                    logger.error(ex.getMessage());
+                }
             }
         }
         
@@ -121,24 +120,33 @@ public class CheckChanges {
             
     }
 
-    private List<String> getTweetsToday() throws TwitterException {
+    private List<String> getTweetsToday() {
         List<String> tweetsToday = new ArrayList<>();
 
         Twitter twitter = TwitterFactory.getSingleton();
 
-        Calendar midnight = new GregorianCalendar();
-        midnight.set(Calendar.HOUR_OF_DAY, 0);
-        midnight.set(Calendar.MINUTE, 0);
-        midnight.set(Calendar.SECOND, 0);
-        midnight.set(Calendar.MILLISECOND, 0);
+        ResponseList<Status> lastTweets;
+        try {
+            lastTweets = twitter.getUserTimeline();
 
-        ResponseList<Status> lastTweets = twitter.getUserTimeline();
-
-        lastTweets.stream().filter((s) -> (!s.isRetweet() && s.getCreatedAt().after(midnight.getTime()))).forEach((s) -> {
-            tweetsToday.add(s.getText());
-        });
-
+            lastTweets.stream().filter((s) -> (isFromTodayAndNoRetweet(s))).forEach((s) -> {
+                tweetsToday.add(s.getText());
+            });
+ 
+            } catch (TwitterException ex) {
+                logger.error(ex.getMessage());
+            }
         return tweetsToday;
+    }
+
+    private boolean isFromTodayAndNoRetweet(Status s) {
+        return !s.isRetweet() && s.getCreatedAt().after(getStartTimeOfToday());
+    }
+    
+    private Date getStartTimeOfToday(){
+        LocalDateTime midnight = LocalDate.now().atStartOfDay();
+        Date convertedDate = Date.from(midnight.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+        return convertedDate;
     }
 
 }

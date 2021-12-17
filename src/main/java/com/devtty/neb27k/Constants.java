@@ -1,7 +1,8 @@
 package com.devtty.neb27k;
 
 /**
- *
+ * Constants used in several parts of the application
+ * 
  * @author Denis
  */
 public class Constants {
@@ -16,4 +17,6 @@ public class Constants {
     
     public final static String URL_MAIN = "http://www.neb.de/";
     public final static String URL_CHANGES = "http://www.neb.de/service/baustellenfahrplanaenderungen/";
+    
+    public final static int PAGING_OFFSET = 1;
 }
